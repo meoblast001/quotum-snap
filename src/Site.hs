@@ -1,16 +1,26 @@
 {-# LANGUAGE OverloadedStrings #-}
 
--- | This module is where all the routes and handlers are defined for your
+-- |
+-- Module : Site
+-- Copyright : (C) 2015 Braden Walters
+-- License : MIT (see LICENSE file)
+-- Maintainer : (C) Braden Walters <vc@braden-walters.info>
+-- Stability : experimental
+--
+-- This module is where all the routes and handlers are defined for your
 -- site. The 'app' function is the initializer that combines everything
 -- together and is exported by this module.
 module Site ( app ) where
 
+import Application
+import Database
 import Control.Applicative
 import Data.ByteString (ByteString)
 import Data.Monoid
 import qualified Data.Text as T
 import Snap.Core
 import Snap.Snaplet
+import Snap.Snaplet.AcidState
 import Snap.Snaplet.Auth
 import Snap.Snaplet.Auth.Backends.JsonFile
 import Snap.Snaplet.Heist
@@ -18,7 +28,6 @@ import Snap.Snaplet.Session.Backends.CookieSession
 import Snap.Util.FileServe
 import Heist
 import qualified Heist.Interpreted as I
-import Application
 
 -- | Render login form
 handleLogin :: Maybe T.Text -> Handler App (AuthManager App) ()
@@ -45,25 +54,33 @@ handleNewUser = method GET handleForm <|> method POST handleFormSubmit
     handleForm = render "new_user"
     handleFormSubmit = registerUser "login" "password" >> redirect "/"
 
+handleDatabaseTest :: Handler App (Acid Database) ()
+handleDatabaseTest = do
+  number <- query dbGetDatabaseTest
+  update dbIncDatabaseTest
+  writeText $ T.pack (show number)
+
 -- | The application's routes.
 routes :: [(ByteString, Handler App App ())]
 routes = [ ("/login", with auth handleLoginSubmit)
          , ("/logout", with auth handleLogout)
          , ("/new_user", with auth handleNewUser)
+         , ("/db_test", with acid handleDatabaseTest)
          , ("", serveDirectory "static") ]
 
 -- | The application initializer.
 app :: SnapletInit App App
 app = makeSnaplet "quotum" "Quotum Quote Database" Nothing $ do
-  h <- nestSnaplet "" heist $ heistInit "templates"
-  s <- nestSnaplet "sess" sess $
-       initCookieSessionManager "site_key.txt" "sess" (Just 3600)
+  heist' <- nestSnaplet "" heist $ heistInit "templates"
+  sess' <- nestSnaplet "sess" sess $
+           initCookieSessionManager "site_key.txt" "sess" (Just 3600)
+  acid' <- nestSnaplet "acid" acid $ acidInit mempty
 
   -- NOTE: We're using initJsonFileAuthManager here because it's easy and
   -- doesn't require any kind of database server to run.  In practice,
   -- you'll probably want to change this to a more robust auth backend.
-  a <- nestSnaplet "auth" auth $
-       initJsonFileAuthManager defAuthSettings sess "users.json"
+  auth' <- nestSnaplet "auth" auth $
+           initJsonFileAuthManager defAuthSettings sess "users.json"
   addRoutes routes
-  addAuthSplices h auth
-  return $ App h s a
+  addAuthSplices heist' auth
+  return $ App heist' sess' acid' auth'
