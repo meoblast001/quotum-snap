@@ -3,6 +3,7 @@ Version: 0.1
 Synopsis: Online quote database with categories
 Description: Online quote database with categories
 License: MIT
+License-File: LICENSE
 Author: Braden Walters <vc@braden-walters.info>
 Maintainer: Braden Walters <vc@braden-walters.info>
 Stability: Experimental
