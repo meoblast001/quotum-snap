@@ -74,7 +74,7 @@ app = makeSnaplet "quotum" "Quotum Quote Database" Nothing $ do
   heist' <- nestSnaplet "" heist $ heistInit "templates"
   sess' <- nestSnaplet "sess" sess $
            initCookieSessionManager "site_key.txt" "sess" (Just 3600)
-  acid' <- nestSnaplet "acid" acid $ acidInit mempty
+  acid' <- nestSnaplet "acid" acid $ acidInit (Database 0)
 
   -- NOTE: We're using initJsonFileAuthManager here because it's easy and
   -- doesn't require any kind of database server to run.  In practice,

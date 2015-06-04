@@ -16,7 +16,6 @@ module Database
 , dbGetDatabaseTest
 ) where
 
-import Data.Monoid
 import Data.SafeCopy
 import Data.Typeable
 import Control.Lens
@@ -30,9 +29,6 @@ data Database = Database { _testDb :: Integer }
 deriveSafeCopy 0 'base ''Database
 
 makeLenses ''Database
-
-instance Monoid Database where
-  mempty = Database 0
 
 incDatabaseTest :: Update Database ()
 incDatabaseTest = modify $ over testDb (+ 1)
