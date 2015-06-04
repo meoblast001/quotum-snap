@@ -5,3 +5,4 @@ state/*
 cabal.sandbox.config
 site_key.txt
 users.json
+snaplets/AcidStateAuthManager/

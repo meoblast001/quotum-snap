@@ -22,7 +22,7 @@ import Snap.Core
 import Snap.Snaplet
 import Snap.Snaplet.AcidState
 import Snap.Snaplet.Auth
-import Snap.Snaplet.Auth.Backends.JsonFile
+import Snap.Snaplet.Auth.Backends.Acid
 import Snap.Snaplet.Heist
 import Snap.Snaplet.Session.Backends.CookieSession
 import Snap.Util.FileServe
@@ -80,7 +80,7 @@ app = makeSnaplet "quotum" "Quotum Quote Database" Nothing $ do
   -- doesn't require any kind of database server to run.  In practice,
   -- you'll probably want to change this to a more robust auth backend.
   auth' <- nestSnaplet "auth" auth $
-           initJsonFileAuthManager defAuthSettings sess "users.json"
+           initAcidAuthManager defAuthSettings sess
   addRoutes routes
   addAuthSplices heist' auth
   return $ App heist' sess' acid' auth'
