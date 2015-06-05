@@ -35,4 +35,4 @@ splicesFromQuoteCategory :: Monad n => QuoteCategory -> Splices (I.Splice n)
 splicesFromQuoteCategory qc = do
   "name" ## qc ^. name . to I.textSplice
   "slug" ## qc ^. slug . to I.textSplice
-  "enabled" ## qc ^. slug . to I.textSplice
+  "enabled" ## qc ^. enabled . to (I.textSplice . T.pack . show)
