@@ -21,7 +21,7 @@
             </a>
             <ul class="dropdown-menu" role="menu">
               <li><a href="#">Add a Quote</a></li>
-              <li><a href="#">Suggest a Category</a></li>
+              <li><a href="/category">Suggest a Category</a></li>
               <li class="divider"></li>
               <li><a href="#">Edit Profile</a></li>
               <li><a href="/logout">Log Out</a></li>
