@@ -15,6 +15,7 @@ module Site ( app ) where
 import Application
 import Database
 import Control.Applicative
+import Control.Lens
 import Data.ByteString (ByteString)
 import Data.Monoid
 import qualified Data.Text as T
@@ -72,13 +73,22 @@ handleNewCategory = do
    Just x  -> do
      update (AddQuoteCategory x)
      categories' <- query AllQuoteCategories
-     let splices = I.bindSplices (allQuoteCategorySplices categories')
-                   . (bindDigestiveSplices view)
+     let splices = I.bindSplices (
+           allQuoteCategorySplices (filter _enabled categories'))
+           . (bindDigestiveSplices view)
      heistLocal splices (render "list_categories")
    Nothing -> do
      categories' <- query AllQuoteCategories
-     let splices = I.bindSplices (allQuoteCategorySplices categories')
-                   . (bindDigestiveSplices view)
+     let splices = I.bindSplices (
+           allQuoteCategorySplices (filter _enabled categories'))
+           . (bindDigestiveSplices view)
+     heistLocal splices (render "list_categories")
+
+handlePendingCategories :: Handler App (AuthManager App) ()
+handlePendingCategories =  do
+     categories' <- query AllQuoteCategories
+     let splices = I.bindSplices (
+           allQuoteCategorySplices (filter (not . _enabled) categories'))
      heistLocal splices (render "list_categories")
 
 -- | The application's routes.
@@ -88,6 +98,7 @@ routes = [ ("/login", with auth handleLoginSubmit)
          , ("/new_user", with auth handleNewUser)
          , ("/category", with auth handleNewCategory)
          , ("/categories", with auth handleNewCategory)
+         , ("/categories/pending", with auth handlePendingCategories)
          , ("", serveDirectory "static") ]
 
 -- | The application initializer.
