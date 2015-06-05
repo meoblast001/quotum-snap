@@ -30,7 +30,7 @@
         </ifLoggedIn>
         <ifLoggedOut>
           <li><a href="/new_user">New User?</a></li>
-          <li><a href="/login">Log In</a></li>
+          <li><a href="/">Log In</a></li>
         </ifLoggedOut>
       </ul>
     </div>

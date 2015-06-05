@@ -36,7 +36,7 @@ import Types.QuoteCategory
 
 -- | Render login form
 handleLogin :: Maybe T.Text -> Handler App (AuthManager App) ()
-handleLogin authError = heistLocal (I.bindSplices errs) $ render "login"
+handleLogin authError = heistLocal (I.bindSplices errs) $ render "index"
   where
     errs = maybe mempty splice authError
     splice err = "loginError" ## I.textSplice err
@@ -68,20 +68,20 @@ allQuoteCategorySplices qcs = "allQuoteCategories" ## (renderQuoteCategories qcs
 -- | Render new category form/handle new category form submit
 handleNewCategory :: Handler App (AuthManager App) ()
 handleNewCategory = do
-  (view, result) <- runForm "form" quoteCategoryForm
+  (view', result) <- runForm "form" quoteCategoryForm
   case result of
    Just x  -> do
      update (AddQuoteCategory x)
      categories' <- query AllQuoteCategories
      let splices = I.bindSplices (
            allQuoteCategorySplices (filter _enabled categories'))
-           . (bindDigestiveSplices view)
+           . (bindDigestiveSplices view')
      heistLocal splices (render "list_categories")
    Nothing -> do
      categories' <- query AllQuoteCategories
      let splices = I.bindSplices (
            allQuoteCategorySplices (filter _enabled categories'))
-           . (bindDigestiveSplices view)
+           . (bindDigestiveSplices view')
      heistLocal splices (render "list_categories")
 
 handlePendingCategories :: Handler App (AuthManager App) ()

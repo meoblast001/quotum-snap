@@ -1,5 +1,7 @@
-<h1>Register a new user</h1>
+<div class="container">
+  <h1>Sign Up</h1>
 
-<bind tag="postAction">/new_user</bind>
-<bind tag="submitText">Add User</bind>
-<apply template="userform"/>
+  <bind tag="postAction">/new_user</bind>
+  <bind tag="submitText">Add User</bind>
+  <apply template="userform"/>
+</div>

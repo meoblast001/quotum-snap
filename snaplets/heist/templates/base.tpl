@@ -13,6 +13,10 @@
     <link href="http://fonts.googleapis.com/css?family=Architects+Daughter:400,700" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="/screen.css"/>
     <style>
+      h1, h2, h3, h4, h5, p, .body {
+        font-family: 'Proxima Nova', sans-serif !important;
+      }
+
       .navbar {
         border-radius: 0px;
         background-color: #0084C8;
@@ -26,14 +30,21 @@
       .nav > li > a:focus, .nav > li > a:active { background-color: transparent; }
 
       .nav .open > a, .nav .open > a:focus, .nav .open > a:hover { background-color: #00578E; }
+
+      .splash {
+        background-color: #0084C8;
+        color: #fff;
+      }
+
+      .splash input {
+        color: #000;
+      }
     </style>
   </head>
   <body>
     <apply template="_navbar"/>
 
-    <div class="container">
-      <apply-content/>
-    </div>
+    <apply-content/>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
