@@ -60,29 +60,24 @@ handleNewUser = method GET handleForm <|> method POST handleFormSubmit
     handleFormSubmit = registerUser "login" "password" >> redirect "/"
 
 allQuoteCategorySplices :: [QuoteCategory] -> Splices (SnapletISplice App)
-allQuoteCategorySplices qcs = "allQuoteCategories" ## (renderQuoteCategories qcs)
+allQuoteCategorySplices qcs = "allQuoteCategories" ## renderQuoteCategories qcs
   where
     renderQuoteCategories = I.mapSplices $ I.runChildrenWith . splicesFromQuoteCategory
-
 
 -- | Render new category form/handle new category form submit
 handleNewCategory :: Handler App (AuthManager App) ()
 handleNewCategory = do
   (view', result) <- runForm "form" quoteCategoryForm
   case result of
-   Just x  -> do
-     update (AddQuoteCategory x)
-     categories' <- query AllQuoteCategories
-     let splices = I.bindSplices (
-           allQuoteCategorySplices (filter _enabled categories'))
-           . (bindDigestiveSplices view')
-     heistLocal splices (render "list_categories")
-   Nothing -> do
-     categories' <- query AllQuoteCategories
-     let splices = I.bindSplices (
-           allQuoteCategorySplices (filter _enabled categories'))
-           . (bindDigestiveSplices view')
-     heistLocal splices (render "list_categories")
+   Just x  -> update (AddQuoteCategory x) >> renderAllCategories view'
+   Nothing -> renderAllCategories view'
+  where
+    renderAllCategories view' = do
+      categories' <- query AllQuoteCategories
+      let splices = I.bindSplices (
+            allQuoteCategorySplices (filter _enabled categories'))
+            . bindDigestiveSplices view'
+      heistLocal splices (render "list_categories")
 
 handlePendingCategories :: Handler App (AuthManager App) ()
 handlePendingCategories =  do
