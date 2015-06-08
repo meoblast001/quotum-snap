@@ -81,10 +81,10 @@ handleNewCategory = do
 
 handlePendingCategories :: Handler App (AuthManager App) ()
 handlePendingCategories =  do
-     categories' <- query AllQuoteCategories
-     let splices = I.bindSplices (
-           allQuoteCategorySplices (filter (not . _enabled) categories'))
-     heistLocal splices (render "list_categories")
+  categories' <- query AllQuoteCategories
+  let splices = I.bindSplices (
+        allQuoteCategorySplices (filter (not . _enabled) categories'))
+  heistLocal splices (render "list_categories")
 
 -- | The application's routes.
 routes :: [(ByteString, Handler App App ())]
