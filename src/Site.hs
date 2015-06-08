@@ -68,18 +68,16 @@ allQuoteCategorySplices qcs = "allQuoteCategories" ## renderQuoteCategories qcs
 -- | Render category list of quotes.
 handleViewCategory :: Handler App (AuthManager App) ()
 handleViewCategory = do
-  slugMaybe <- fmap decodeUtf8 <$> getParam "slug"
-  case slugMaybe of
+  slugMaybe <- getParam "slug"
+  case decodeUtf8 <$> slugMaybe of
     Just slug' -> do
-      categoryMaybe <- listToMaybe <$> filter (\c -> c ^. slug == slug')
-                    <$> query AllQuoteCategories
+      categories' <- query AllQuoteCategories
+      let categoryMaybe = categories' ^? traverse . filtered (has (slug . only slug'))
       case categoryMaybe of
+        Nothing -> redirect "/"    -- TODO: A 404 message would be better.
         Just category' ->
-          let splices = do
-                "categoryName" ## category' ^. name . to I.textSplice
+          let splices = "categoryName" ## category' ^. name . to I.textSplice
           in renderWithSplices "view_category" splices
-        -- TODO: A 404 message would be better.
-        Nothing -> redirect "/"
     -- TODO: A 400 message would be better.
     Nothing -> redirect "/"
 
