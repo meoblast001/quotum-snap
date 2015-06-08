@@ -16,7 +16,6 @@ import Application
 import Control.Applicative
 import Control.Lens
 import Data.ByteString (ByteString)
-import qualified Data.ByteString.Char8 as BSC8
 import Data.Maybe
 import Data.Monoid
 import qualified Data.Text as T
@@ -69,7 +68,7 @@ allQuoteCategorySplices qcs = "allQuoteCategories" ## renderQuoteCategories qcs
 -- | Render category list of quotes.
 handleViewCategory :: Handler App (AuthManager App) ()
 handleViewCategory = do
-  slugMaybe <- fmap (fmap decodeUtf8) <$> getParam $ BSC8.pack "slug"
+  slugMaybe <- fmap decodeUtf8 <$> getParam "slug"
   case slugMaybe of
     Just slug' -> do
       categoryMaybe <- listToMaybe <$> filter (\c -> c ^. slug == slug')
