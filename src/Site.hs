@@ -13,12 +13,14 @@
 module Site ( app ) where
 
 import Application
-import Database
 import Control.Applicative
 import Control.Lens
 import Data.ByteString (ByteString)
+import qualified Data.ByteString.Char8 as BSC8
+import Data.Maybe
 import Data.Monoid
 import qualified Data.Text as T
+import Data.Text.Encoding
 import Snap.Core
 import Snap.Snaplet
 import Snap.Snaplet.AcidState
@@ -64,19 +66,37 @@ allQuoteCategorySplices qcs = "allQuoteCategories" ## renderQuoteCategories qcs
   where
     renderQuoteCategories = I.mapSplices $ I.runChildrenWith . splicesFromQuoteCategory
 
+-- | Render category list of quotes.
+handleViewCategory :: Handler App (AuthManager App) ()
+handleViewCategory = do
+  slugMaybe <- fmap (fmap decodeUtf8) <$> getParam $ BSC8.pack "slug"
+  case slugMaybe of
+    Just slug' -> do
+      categoryMaybe <- listToMaybe <$> filter (\c -> c ^. slug == slug')
+                    <$> query AllQuoteCategories
+      case categoryMaybe of
+        Just category' ->
+          let splices = do
+                "categoryName" ## category' ^. name . to I.textSplice
+          in renderWithSplices "view_category" splices
+        -- TODO: A 404 message would be better.
+        Nothing -> redirect "/"
+    -- TODO: A 400 message would be better.
+    Nothing -> redirect "/"
+
 -- | Render new category form/handle new category form submit
 handleNewCategory :: Handler App (AuthManager App) ()
 handleNewCategory = do
   (view', result) <- runForm "form" quoteCategoryForm
   case result of
-   Just x  -> update (AddQuoteCategory x) >> renderAllCategories view'
+   Just x -> update (AddQuoteCategory x) >> renderAllCategories view'
    Nothing -> renderAllCategories view'
   where
     renderAllCategories view' = do
       categories' <- query AllQuoteCategories
-      let splices = I.bindSplices (
-            allQuoteCategorySplices (filter _enabled categories'))
-            . bindDigestiveSplices view'
+      let enabledCategories = filter _enabled categories'
+          splices = I.bindSplices (allQuoteCategorySplices enabledCategories)
+                  . bindDigestiveSplices view'
       heistLocal splices (render "list_categories")
 
 handlePendingCategories :: Handler App (AuthManager App) ()
@@ -91,6 +111,7 @@ routes :: [(ByteString, Handler App App ())]
 routes = [ ("/login", with auth handleLoginSubmit)
          , ("/logout", with auth handleLogout)
          , ("/new_user", with auth handleNewUser)
+         , ("/category/:slug", with auth handleViewCategory)
          , ("/category", with auth handleNewCategory)
          , ("/categories", with auth handleNewCategory)
          , ("/categories/pending", with auth handlePendingCategories)

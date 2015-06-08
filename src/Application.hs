@@ -15,7 +15,6 @@
 module Application where
 
 import Control.Lens
-import Database
 import Snap.Snaplet
 import Snap.Snaplet.Heist
 import Snap.Snaplet.AcidState
