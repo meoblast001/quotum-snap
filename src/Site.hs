@@ -17,8 +17,6 @@ import Control.Applicative
 import Control.Lens
 import Data.ByteString (ByteString)
 import qualified Data.Map as M
-import Data.Maybe
-import Data.Monoid
 import qualified Data.Text as T
 import Data.Text.Encoding
 import Snap.Core
