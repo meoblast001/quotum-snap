@@ -16,6 +16,7 @@ import Application
 import Control.Applicative
 import Control.Lens
 import Data.ByteString (ByteString)
+import qualified Data.Map as M
 import Data.Maybe
 import Data.Monoid
 import qualified Data.Text as T
@@ -120,7 +121,7 @@ app = makeSnaplet "quotum" "Quotum Quote Database" Nothing $ do
   heist' <- nestSnaplet "" heist $ heistInit "templates"
   sess' <- nestSnaplet "sess" sess $
            initCookieSessionManager "site_key.txt" "sess" (Just 3600)
-  acid' <- nestSnaplet "acid" acid $ acidInit (AppState [])
+  acid' <- nestSnaplet "acid" acid $ acidInit (AppState M.empty)
   auth' <- nestSnaplet "auth" auth $
            initAcidAuthManager defAuthSettings sess
   addRoutes routes

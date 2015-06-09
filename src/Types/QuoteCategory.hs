@@ -12,10 +12,12 @@ import Heist
 import qualified Heist.Interpreted as I
 import Text.Digestive
 
+type Slug = T.Text
+
 data QuoteCategory =
   QuoteCategory {
     _name :: T.Text
-  , _slug :: T.Text
+  , _slug :: Slug
   , _enabled :: Bool
   } deriving (Eq, Show, Typeable)
 

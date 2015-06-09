@@ -2,6 +2,7 @@
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE TypeFamilies #-}
+{-# LANGUAGE TypeSynonymInstances #-}
 
 -- |
 -- Module : Application
@@ -15,6 +16,8 @@
 module Application where
 
 import Control.Lens
+import Data.Functor
+import qualified Data.Map as M
 import Snap.Snaplet
 import Snap.Snaplet.Heist
 import Snap.Snaplet.AcidState
@@ -27,7 +30,7 @@ import Types.QuoteCategory
 
 data AppState =
   AppState {
-    _categories :: [QuoteCategory]
+    _categories :: M.Map Slug QuoteCategory
   } deriving (Eq, Show, Typeable)
 
 makeLenses ''AppState
@@ -51,15 +54,13 @@ type AppHandler = Handler App App
 deriveSafeCopy 0 'base ''AppState
 
 addQuoteCategory :: QuoteCategory -> Update AppState ()
-addQuoteCategory qc = categories %= (:) qc
+addQuoteCategory qc = categories %= M.insert (qc ^. slug) qc
 
 allQuoteCategories :: Query AppState [QuoteCategory]
-allQuoteCategories = view categories
+allQuoteCategories = map snd <$> M.toList <$> view categories
 
-deleteQuoteCategory :: QuoteCategory -> Update AppState ()
-deleteQuoteCategory qc = do
-  qcs <- use categories
-  categories .= filter (== qc) qcs
+deleteQuoteCategory :: Slug -> Update AppState ()
+deleteQuoteCategory slug' = categories %= M.delete slug'
 
 makeAcidic ''AppState
   [
