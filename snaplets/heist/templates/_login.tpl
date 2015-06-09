@@ -1,10 +1,3 @@
-<style>
-  .navbar-quotum {
-    margin-bottom: 0px;
-    border-bottom: 1px solid #00578E;
-   }
-</style>
-
 <div class="splash">
   <div class="container">
     <h1>Log in</h1>
