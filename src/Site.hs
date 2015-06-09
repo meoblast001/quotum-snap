@@ -70,8 +70,7 @@ handleViewCategory = do
   slugMaybe <- getParam "slug"
   case decodeUtf8 <$> slugMaybe of
     Just slug' -> do
-      categories' <- query AllQuoteCategories
-      let categoryMaybe = categories' ^? traverse . filtered (has (slug . only slug'))
+      categoryMaybe <- query (SearchQuoteCategory slug')
       case categoryMaybe of
         Nothing -> redirect "/"    -- TODO: A 404 message would be better.
         Just category' ->

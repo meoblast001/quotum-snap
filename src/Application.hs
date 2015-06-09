@@ -58,6 +58,9 @@ addQuoteCategory qc = categories %= M.insert (qc ^. slug) qc
 allQuoteCategories :: Query AppState [QuoteCategory]
 allQuoteCategories = map snd <$> M.toList <$> view categories
 
+searchQuoteCategory :: Slug -> Query AppState (Maybe QuoteCategory)
+searchQuoteCategory slug' = M.lookup slug' <$> view categories
+
 deleteQuoteCategory :: Slug -> Update AppState ()
 deleteQuoteCategory slug' = categories %= M.delete slug'
 
@@ -65,5 +68,6 @@ makeAcidic ''AppState
   [
     'addQuoteCategory
   , 'allQuoteCategories
+  , 'searchQuoteCategory
   , 'deleteQuoteCategory
   ]
