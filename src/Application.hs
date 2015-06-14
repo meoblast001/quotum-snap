@@ -16,6 +16,7 @@
 module Application where
 
 import Control.Lens
+import Data.Functor
 import qualified Data.Map as M
 import Snap.Snaplet
 import Snap.Snaplet.Heist

@@ -3,6 +3,7 @@
 {-# LANGUAGE TemplateHaskell #-}
 module Types.QuoteCategory where
 
+import Control.Applicative
 import Control.Lens
 import Data.SafeCopy
 import qualified Data.Text as T

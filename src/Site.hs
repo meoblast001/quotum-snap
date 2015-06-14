@@ -17,6 +17,7 @@ import Control.Applicative
 import Control.Lens
 import Data.ByteString (ByteString)
 import qualified Data.Map as M
+import Data.Monoid
 import qualified Data.Text as T
 import Data.Text.Encoding
 import Snap.Core
@@ -107,10 +108,13 @@ routes = [ ("/login", with auth handleLoginSubmit)
          , ("/logout", with auth handleLogout)
          , ("/new_user", with auth handleNewUser)
          , ("/category/:slug", with auth handleViewCategory)
-         , ("/category", with auth handleNewCategory)
-         , ("/categories", with auth handleNewCategory)
+         , ("/categories", with auth (needsUser handleNewCategory))
          , ("/categories/pending", with auth handlePendingCategories)
          , ("", serveDirectory "static") ]
+  where
+    needsUser successHandler = do
+      loggedIn <- isLoggedIn
+      if loggedIn then successHandler else redirect "/"
 
 -- | The application initializer.
 app :: SnapletInit App App
