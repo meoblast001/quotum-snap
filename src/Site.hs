@@ -114,7 +114,8 @@ routes = [ ("/login", with auth handleLoginSubmit)
   where
     needsUser successHandler = do
       loggedIn <- isLoggedIn
-      if loggedIn then successHandler else redirect "/"
+      req <- getRequest
+      if loggedIn then successHandler else redirect ("/?r=" <> rqURI req)
 
 -- | The application initializer.
 app :: SnapletInit App App
