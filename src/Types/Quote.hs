@@ -3,6 +3,7 @@
 {-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE FunctionalDependencies #-}
+{-# LANGUAGE TypeSynonymInstances #-}
 {-# LANGUAGE CPP #-}
 module Types.Quote where
 
@@ -13,10 +14,12 @@ import Control.Lens
 import Data.SafeCopy
 import qualified Data.Text as T
 import Data.Typeable
+import Types.QuoteCategory
 
 data Quote =
   Quote {
-    _quoteTitle :: T.Text
+    _quoteSlug :: Slug
+  , _quoteTitle :: T.Text
   , _quoteContents :: T.Text
   } deriving (Eq, Show, Typeable)
 
