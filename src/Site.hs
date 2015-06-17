@@ -27,6 +27,7 @@ import Snap.Snaplet.Auth
 import Snap.Snaplet.Auth.Backends.Acid
 import Snap.Snaplet.Heist
 import Snap.Snaplet.Session.Backends.CookieSession
+import Snap.Snaplet.Sass
 import Snap.Util.FileServe
 import Text.Digestive.Heist
 import Text.Digestive.Snap hiding (method)
@@ -119,6 +120,7 @@ routes = [ ("/login", with auth handleLoginSubmit)
          , ("/categories", with auth (needsUser handleNewCategory))
          , ("/categories/pending", with auth handlePendingCategories)
          , ("", serveDirectory "static") ]
+         -- TODO: Serve sass files to /styles
   where
     needsUser successHandler = do
       loggedIn <- isLoggedIn
@@ -134,6 +136,7 @@ app = makeSnaplet "quotum" "Quotum Quote Database" Nothing $ do
   acid' <- nestSnaplet "acid" acid $ acidInit (AppState M.empty M.empty)
   auth' <- nestSnaplet "auth" auth $
            initAcidAuthManager defAuthSettings sess
+  sass' <- nestSnaplet "sass" sass initSass
   addRoutes routes
   addAuthSplices heist' auth
-  return $ App heist' sess' acid' auth'
+  return $ App heist' sess' acid' auth' sass'

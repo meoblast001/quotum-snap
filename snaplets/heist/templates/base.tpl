@@ -11,7 +11,7 @@
         <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
     <link href="http://fonts.googleapis.com/css?family=Architects+Daughter:400,700" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="/screen.css"/>
+    <link rel="stylesheet" type="text/css" href="/styles/screen.css"/>
   </head>
   <body>
     <apply template="_navbar"/>

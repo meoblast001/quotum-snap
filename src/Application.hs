@@ -28,6 +28,7 @@ import Snap.Snaplet.Heist
 import Snap.Snaplet.AcidState
 import Snap.Snaplet.Auth
 import Snap.Snaplet.Session
+import Snap.Snaplet.Sass
 
 import Lenses
 import Types.QuoteCategory
@@ -45,7 +46,9 @@ data App = App
   { _heist :: Snaplet (Heist App)
   , _sess :: Snaplet SessionManager
   , _acid :: Snaplet (Acid AppState)
-  , _auth :: Snaplet (AuthManager App) }
+  , _auth :: Snaplet (AuthManager App) 
+  , _sass :: Snaplet Sass
+  }
 
 makeLenses ''App
 
