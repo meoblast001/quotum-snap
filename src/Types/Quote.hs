@@ -1,5 +1,8 @@
 {-# LANGUAGE DeriveDataTypeable #-}
 {-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE FunctionalDependencies #-}
+{-# LANGUAGE TypeSynonymInstances #-}
 {-# LANGUAGE CPP #-}
 module Types.Quote where
 
@@ -9,10 +12,12 @@ import Control.Applicative
 import Data.SafeCopy
 import qualified Data.Text as T
 import Data.Typeable
+import Types.QuoteCategory
 
 data Quote =
   Quote {
-    quoteTitle :: T.Text
+    quoteSlug :: Slug
+  , quoteTitle :: T.Text
   , quoteContents :: T.Text
   } deriving (Eq, Show, Typeable)
 
