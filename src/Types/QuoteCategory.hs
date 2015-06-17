@@ -2,16 +2,11 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE CPP #-}
-{-# LANGUAGE MultiParamTypeClasses #-}
-{-# LANGUAGE FunctionalDependencies #-}
-{-# LANGUAGE TypeSynonymInstances #-}
-{- Hey, let's just add another LANGUAGE Pragma! -}
 module Types.QuoteCategory where
 
 #if __GLASGOW_HASKELL__ < 710
 import Control.Applicative
 #endif
-import Control.Lens
 import Data.SafeCopy
 import qualified Data.Text as T
 import Data.Typeable
@@ -23,12 +18,11 @@ type Slug = T.Text
 
 data QuoteCategory =
   QuoteCategory {
-    _quoteCategoryName :: T.Text
-  , _quoteCategorySlug :: Slug
-  , _quoteCategoryEnabled :: Bool
+    quoteCategoryName :: T.Text
+  , quoteCategorySlug :: Slug
+  , quoteCategoryEnabled :: Bool
   } deriving (Eq, Show, Typeable)
 
-makeFields ''QuoteCategory
 deriveSafeCopy 0 'base ''QuoteCategory
 
 quoteCategoryForm :: Monad m => Form T.Text m QuoteCategory
@@ -39,9 +33,3 @@ quoteCategoryForm =
   where
     nonEmptyText =
       check "Field cannot be blank" (not . T.null) $ text Nothing
-
-splicesFromQuoteCategory :: Monad n => QuoteCategory -> Splices (I.Splice n)
-splicesFromQuoteCategory qc = do
-  "name" ## qc ^. name . to I.textSplice
-  "slug" ## qc ^. slug . to I.textSplice
-  "enabled" ## qc ^. enabled . to (I.textSplice . T.pack . show)

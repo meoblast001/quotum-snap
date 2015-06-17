@@ -21,14 +21,15 @@ import Control.Lens
 import Data.Functor
 #endif
 import qualified Data.Map as M
+import Data.SafeCopy
+import Data.Typeable
 import Snap.Snaplet
 import Snap.Snaplet.Heist
 import Snap.Snaplet.AcidState
 import Snap.Snaplet.Auth
 import Snap.Snaplet.Session
 
-import Data.SafeCopy
-import Data.Typeable
+import Lenses
 import Types.QuoteCategory
 import Types.Quote
 

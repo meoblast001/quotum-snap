@@ -33,7 +33,15 @@ import Text.Digestive.Snap hiding (method)
 import Heist
 import qualified Heist.Interpreted as I
 
+import Lenses
 import Types.QuoteCategory
+
+-- TODO: Probably move this to another module somewhere.
+splicesFromQuoteCategory :: Monad n => QuoteCategory -> Splices (I.Splice n)
+splicesFromQuoteCategory qc = do
+  "name" ## qc ^. name . to I.textSplice
+  "slug" ## qc ^. slug . to I.textSplice
+  "enabled" ## qc ^. enabled . to (I.textSplice . T.pack . show)
 
 -- | Render login form
 handleLogin :: Maybe T.Text -> Handler App (AuthManager App) ()
@@ -90,7 +98,7 @@ handleNewCategory = do
   where
     renderAllCategories view' = do
       categories' <- query AllQuoteCategories
-      let enabledCategories = filter _quoteCategoryEnabled categories'
+      let enabledCategories = filter quoteCategoryEnabled categories'
           splices = I.bindSplices (allQuoteCategorySplices enabledCategories)
                   . bindDigestiveSplices view'
       heistLocal splices (render "list_categories")
@@ -99,7 +107,7 @@ handlePendingCategories :: Handler App (AuthManager App) ()
 handlePendingCategories =  do
   categories' <- query AllQuoteCategories
   let splices = I.bindSplices (
-        allQuoteCategorySplices (filter (not . _quoteCategoryEnabled) categories'))
+        allQuoteCategorySplices (filter (not . quoteCategoryEnabled) categories'))
   heistLocal splices (render "list_categories")
 
 -- | The application's routes.
