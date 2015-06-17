@@ -90,7 +90,7 @@ handleNewCategory = do
   where
     renderAllCategories view' = do
       categories' <- query AllQuoteCategories
-      let enabledCategories = filter _enabled categories'
+      let enabledCategories = filter _quoteCategoryEnabled categories'
           splices = I.bindSplices (allQuoteCategorySplices enabledCategories)
                   . bindDigestiveSplices view'
       heistLocal splices (render "list_categories")
@@ -99,7 +99,7 @@ handlePendingCategories :: Handler App (AuthManager App) ()
 handlePendingCategories =  do
   categories' <- query AllQuoteCategories
   let splices = I.bindSplices (
-        allQuoteCategorySplices (filter (not . _enabled) categories'))
+        allQuoteCategorySplices (filter (not . _quoteCategoryEnabled) categories'))
   heistLocal splices (render "list_categories")
 
 -- | The application's routes.
@@ -123,7 +123,7 @@ app = makeSnaplet "quotum" "Quotum Quote Database" Nothing $ do
   heist' <- nestSnaplet "" heist $ heistInit "templates"
   sess' <- nestSnaplet "sess" sess $
            initCookieSessionManager "site_key.txt" "sess" (Just 3600)
-  acid' <- nestSnaplet "acid" acid $ acidInit (AppState M.empty)
+  acid' <- nestSnaplet "acid" acid $ acidInit (AppState M.empty M.empty)
   auth' <- nestSnaplet "auth" auth $
            initAcidAuthManager defAuthSettings sess
   addRoutes routes

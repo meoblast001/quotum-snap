@@ -2,6 +2,10 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE CPP #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE FunctionalDependencies #-}
+{-# LANGUAGE TypeSynonymInstances #-}
+{- Hey, let's just add another LANGUAGE Pragma! -}
 module Types.QuoteCategory where
 
 #if __GLASGOW_HASKELL__ < 710
@@ -19,12 +23,12 @@ type Slug = T.Text
 
 data QuoteCategory =
   QuoteCategory {
-    _name :: T.Text
-  , _slug :: Slug
-  , _enabled :: Bool
+    _quoteCategoryName :: T.Text
+  , _quoteCategorySlug :: Slug
+  , _quoteCategoryEnabled :: Bool
   } deriving (Eq, Show, Typeable)
 
-makeLenses ''QuoteCategory
+makeFields ''QuoteCategory
 deriveSafeCopy 0 'base ''QuoteCategory
 
 quoteCategoryForm :: Monad m => Form T.Text m QuoteCategory

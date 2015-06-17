@@ -30,10 +30,12 @@ import Snap.Snaplet.Session
 import Data.SafeCopy
 import Data.Typeable
 import Types.QuoteCategory
+import Types.Quote
 
 data AppState =
   AppState {
     _categories :: M.Map Slug QuoteCategory
+  , _quotes     :: M.Map Slug Quote
   } deriving (Eq, Show, Typeable)
 
 makeLenses ''AppState
