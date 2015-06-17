@@ -10,8 +10,6 @@ import Control.Applicative
 import Data.SafeCopy
 import qualified Data.Text as T
 import Data.Typeable
-import Heist
-import qualified Heist.Interpreted as I
 import Text.Digestive
 
 type Slug = T.Text
