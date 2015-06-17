@@ -3,6 +3,7 @@
 {-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE TypeSynonymInstances #-}
+{-# LANGUAGE CPP #-}
 
 -- |
 -- Module : Application
@@ -16,7 +17,9 @@
 module Application where
 
 import Control.Lens
+#if __GLASGOW_HASKELL__ < 710
 import Data.Functor
+#endif
 import qualified Data.Map as M
 import Snap.Snaplet
 import Snap.Snaplet.Heist
