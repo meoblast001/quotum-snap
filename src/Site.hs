@@ -73,7 +73,7 @@ handleViewCategory = do
     Just slug' -> do
       categoryMaybe <- query (SearchQuoteCategory slug')
       case categoryMaybe of
-        Nothing -> redirect "/"    -- TODO: A 404 message would be better.
+        Nothing -> render "error404"
         Just category' ->
           let splices = "categoryName" ## category' ^. name . to I.textSplice
           in renderWithSplices "view_category" splices
