@@ -36,6 +36,7 @@ import qualified Heist.Interpreted as I
 
 import Lenses
 import Types.QuoteCategory
+import Forms
 
 -- TODO: Probably move this to another module somewhere.
 splicesFromQuoteCategory :: Monad n => QuoteCategory -> Splices (I.Splice n)
