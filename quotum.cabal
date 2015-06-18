@@ -41,7 +41,7 @@ Executable quotum
     , xmlhtml >= 0.1 && < 0.3
     , snaplet-acid-state >= 0.2.6.2 && < 0.3
     , snaplet-auth-acid >= 0.1.0 && < 0.2
-    , snaplet-sass >= 0.1.0 && < 0.2
+    , snaplet-sass >= 0.1.2 && < 0.2
     , safecopy >= 0.8.5
     , containers >= 0.5 && < 0.6
 
