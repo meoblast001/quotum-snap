@@ -68,7 +68,7 @@ handleNewUser :: Handler App (AuthManager App) ()
 handleNewUser = method GET handleForm <|> method POST handleFormSubmit
   where
     handleForm = render "new_user"
-    handleFormSubmit = registerUser "login" "password" >> redirect "/"
+    handleFormSubmit = registerUser "login" "password" >> handleLoginSubmit
 
 allQuoteCategorySplices :: [QuoteCategory] -> Splices (SnapletISplice App)
 allQuoteCategorySplices qcs = "allQuoteCategories" ## renderQuoteCategories qcs
