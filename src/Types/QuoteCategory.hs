@@ -24,8 +24,8 @@ instance ToJSON QuoteCategory where
     object ["name" .= name, "slug" .= slug, "enabled" .= enabled]
 
 instance FromJSON QuoteCategory where
-  parseJSON (Object v) = QuoteCategory <$>
-                         v .: "name" <*>
-                         v .: "slug" <*>
-                         v .: "enabled"
+  parseJSON (Object v) = QuoteCategory
+                         <$> v .: "name"
+                         <*> v .: "slug"
+                         <*> v .: "enabled"
   parseJSON _          = mzero

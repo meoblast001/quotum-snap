@@ -27,8 +27,8 @@ instance ToJSON Quote where
     object ["slug" .= slug, "title" .= title, "contents" .= contents]
 
 instance FromJSON Quote where
-  parseJSON (Object v) = Quote <$>
-                         v .: "slug" <*>
-                         v .: "title" <*>
-                         v .: "contents"
+  parseJSON (Object v) = Quote
+                         <$> v .: "slug"
+                         <*> v .: "title"
+                         <*> v .: "contents"
   parseJSON _          = mzero
