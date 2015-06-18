@@ -6,3 +6,5 @@ cabal.sandbox.config
 site_key.txt
 users.json
 snaplets/AcidStateAuthManager/
+snaplets/sass/css/*
+.sass-cache/*

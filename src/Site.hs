@@ -120,8 +120,8 @@ routes = [ ("/login", with auth handleLoginSubmit)
          , ("/category/:slug", with auth handleViewCategory)
          , ("/categories", with auth (needsUser handleNewCategory))
          , ("/categories/pending", with auth handlePendingCategories)
+         , ("/styles", with sass sassServe)
          , ("", serveDirectory "static") ]
-         -- TODO: Serve sass files to /styles
   where
     needsUser successHandler = do
       loggedIn <- isLoggedIn
