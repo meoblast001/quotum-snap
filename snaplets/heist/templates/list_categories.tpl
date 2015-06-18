@@ -7,7 +7,7 @@
         <th></th>
       </tr>
       <tr>
-        <dfForm name="form" action="/category">
+        <dfForm name="form" action="/categories">
           <dfChildErrorList />
           <td><dfInputText ref="name" /></td>
           <td><dfInputText ref="slug" /></td>
