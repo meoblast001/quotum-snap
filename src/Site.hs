@@ -121,7 +121,9 @@ routes = [ ("/login", with auth handleLoginSubmit)
          , ("/categories", with auth (needsUser handleNewCategory))
          , ("/categories/pending", with auth handlePendingCategories)
          , ("/styles", with sass sassServe)
-         , ("", serveDirectory "static") ]
+         , ("", serveDirectory "static")
+         , ("", render "error404")
+         ]
   where
     needsUser successHandler = do
       loggedIn <- isLoggedIn
