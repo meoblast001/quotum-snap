@@ -15,6 +15,7 @@ module Site ( app ) where
 import Application
 import Control.Applicative
 import Control.Lens
+import Control.Monad.IO.Class
 import Data.ByteString (ByteString)
 import qualified Data.Map as M
 import Data.Monoid
@@ -45,19 +46,20 @@ splicesFromQuoteCategory qc = do
   "slug" ## qc ^. slug . to I.textSplice
   "enabled" ## qc ^. enabled . to (I.textSplice . T.pack . show)
 
--- | Render login form
-handleLogin :: Maybe T.Text -> Handler App (AuthManager App) ()
-handleLogin authError = heistLocal (I.bindSplices errs) $ render "index"
-  where
-    errs = maybe mempty splice authError
-    splice err = "loginError" ## I.textSplice err
-
--- | Handle login submit
-handleLoginSubmit :: Handler App (AuthManager App) ()
-handleLoginSubmit =
-  loginUser "login" "password" Nothing (\_ -> handleLogin err) (redirect "/")
-  where
-    err = Just "Unknown user or password"
+-- | Handle login form+submit
+handleLogin :: Handler App (AuthManager App) ()
+handleLogin = do
+  (view', result) <- runForm "login" loginForm
+  case result of
+    Just user -> do
+      loginAttempt <- loginByUsername
+                      (user ^. username)
+                      (user ^. password . to (ClearText . encodeUtf8))
+                      (user ^. remember)
+      case loginAttempt of
+        Left s -> liftIO (print s) >> handleLogin
+        Right _ -> redirect "/"
+    Nothing -> heistLocal (bindDigestiveSplices view') $ render "index"
 
 -- | Logs out and redirects the user to the site index.
 handleLogout :: Handler App (AuthManager App) ()
@@ -68,7 +70,7 @@ handleNewUser :: Handler App (AuthManager App) ()
 handleNewUser = method GET handleForm <|> method POST handleFormSubmit
   where
     handleForm = render "new_user"
-    handleFormSubmit = registerUser "login" "password" >> handleLoginSubmit
+    handleFormSubmit = registerUser "login" "password" >> handleLogin
 
 allQuoteCategorySplices :: [QuoteCategory] -> Splices (SnapletISplice App)
 allQuoteCategorySplices qcs = "allQuoteCategories" ## renderQuoteCategories qcs
@@ -114,7 +116,8 @@ handlePendingCategories =  do
 
 -- | The application's routes.
 routes :: [(ByteString, Handler App App ())]
-routes = [ ("/login", with auth handleLoginSubmit)
+routes = [ ("/", with auth handleLogin)
+         , ("/login", with auth handleLogin)
          , ("/logout", with auth handleLogout)
          , ("/new_user", with auth handleNewUser)
          , ("/category/:slug", with auth handleViewCategory)

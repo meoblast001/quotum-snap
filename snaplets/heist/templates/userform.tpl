@@ -1,14 +1,15 @@
-<form method="post" action="${postAction}">
+<dfForm name="login" action="${postAction}">
+  <dfChildErrorList />
   <table id="info">
     <tr>
-      <td>Login:</td><td><input type="text" name="login" size="20" /></td>
+      <td>Login:</td><td><dfInputText ref="username" /></td>
     </tr>
     <tr>
-      <td>Password:</td><td><input type="password" name="password" size="20" /></td>
+      <td>Password:</td><td><dfInputPassword ref="password" /></td>
     </tr>
     <tr>
       <td></td>
-      <td><input type="submit" value="${submitText}" /></td>
+      <td><dfInputSubmit value="${submitText}" /></td>
     </tr>
   </table>
-</form>
+</dfForm>
