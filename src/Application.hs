@@ -46,7 +46,7 @@ data App = App
   { _heist :: Snaplet (Heist App)
   , _sess :: Snaplet SessionManager
   , _acid :: Snaplet (Acid AppState)
-  , _auth :: Snaplet (AuthManager App) 
+  , _auth :: Snaplet (AuthManager App)
   , _sass :: Snaplet Sass
   }
 
