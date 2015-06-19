@@ -1,0 +1,34 @@
+h1, h2, h3, h4, h5, p, body {
+  font-family: $fontFamily !important;
+}
+
+.navbar {
+  border: {
+    radius: 0px;
+    width: 0px 0px 1px 0px;
+    color: $navBorder;  
+  }
+  background: $navBg;
+  color: $navFg;
+  margin-bottom: 0;
+  
+  a, a:link {
+    color: $navFg;
+  }
+  a:hover, a:focus {
+    color: $navFgHover;
+  }
+}
+
+.navbar-brand {
+  font-family: $brandFontFamily;
+  font-weight: bold;
+}
+
+.nav > li > a:hover, .nav > li > a:focus, .nav > li > a:active {
+  background-color: transparent;
+}
+
+.nav .open > a, .nav .open > a:focus, .nav .open > a:hover {
+  background-color: $navDropDownHoverBg;
+}
