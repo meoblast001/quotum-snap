@@ -35,14 +35,15 @@ import Snap.Snaplet.Sass
 import Snap.Util.FileServe
 import Text.Digestive.Heist
 import Text.Digestive.Snap hiding (method)
-import Text.Digestive.View (View)
 import Heist
 import qualified Heist.Interpreted as I
 
+import Auth.Login
+import Auth.Register
+import Forms.Login
+import Forms.QuoteCategory
 import Lenses
 import Types.QuoteCategory
-import Types.Login
-import Forms
 
 -- TODO: Probably move this to another module somewhere.
 splicesFromQuoteCategory :: Monad n => QuoteCategory -> Splices (I.Splice n)
@@ -51,43 +52,9 @@ splicesFromQuoteCategory qc = do
   "slug" ## qc ^. slug . to I.textSplice
   "enabled" ## qc ^. enabled . to (I.textSplice . T.pack . show)
 
--- | Handle login form+submit
-handleLogin :: Handler App (AuthManager App) ()
-handleLogin = do
-  (view', result) <- runForm "login" loginForm
-  case result of
-    Just user -> handleLoginSubmit view' "index" user
-    Nothing -> heistLocal (bindDigestiveSplices view') $ render "index"
-
-handleLoginSubmit :: View T.Text -> ByteString -> Login -> Handler App (AuthManager App) ()
-handleLoginSubmit view' site user = do
-  loginAttempt <- loginByUsername
-                    (user ^. username)
-                    (user ^. password . to (ClearText . encodeUtf8))
-                    (user ^. remember)
-  case loginAttempt of
-    Left s -> do
-      liftIO $ print s
-      heistLocal (bindDigestiveSplices view') $ render site
-    Right _ -> redirect "/"
-
 -- | Logs out and redirects the user to the site index.
 handleLogout :: Handler App (AuthManager App) ()
 handleLogout = logout >> redirect "/"
-
--- | Handle new user form submit
-handleNewUser :: Handler App (AuthManager App) ()
-handleNewUser = do
-  (view', result) <- runForm "new_user" loginForm
-  case result of
-    Just user -> do
-      auth' <- createUser
-                (user ^. username)
-                (encodeUtf8 (user ^. password))
-      case auth' of
-        Left e  -> liftIO (print e) >> heistLocal (bindDigestiveSplices view') (render "new_user")
-        Right _ -> handleLoginSubmit view' "new_user" user
-    Nothing -> heistLocal (bindDigestiveSplices view') $ render "new_user"
 
 allQuoteCategorySplices :: [QuoteCategory] -> Splices (SnapletISplice App)
 allQuoteCategorySplices qcs = "allQuoteCategories" ## renderQuoteCategories qcs
