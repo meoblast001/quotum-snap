@@ -141,7 +141,7 @@ routes = [ ("/", with auth handleLogin)
          , ("/categories", with auth (needsUser handleNewCategory))
          , ("/categories/pending", with auth handlePendingCategories)
          , ("/styles", with sass sassServe)
-         , ("", serveDirectory "static")
+         , ("/static", serveDirectory "static")
          , ("", render "error404")
          ]
   where
