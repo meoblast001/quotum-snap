@@ -57,7 +57,7 @@ handleLogin = do
                       (user ^. password . to (ClearText . encodeUtf8))
                       (user ^. remember)
       case loginAttempt of
-        Left s -> liftIO (print s) >> handleLogin
+        Left s -> error (show s)
         Right _ -> redirect "/"
     Nothing -> heistLocal (bindDigestiveSplices view') $ render "index"
 
