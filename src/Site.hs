@@ -56,11 +56,11 @@ handleLogin :: Handler App (AuthManager App) ()
 handleLogin = do
   (view', result) <- runForm "login" loginForm
   case result of
-    Just user -> handleLoginSubmit view' user
+    Just user -> handleLoginSubmit view' "index" user
     Nothing -> heistLocal (bindDigestiveSplices view') $ render "index"
 
-handleLoginSubmit :: View T.Text -> Login -> Handler App (AuthManager App) ()
-handleLoginSubmit view' user = do
+handleLoginSubmit :: View T.Text -> ByteString -> Login -> Handler App (AuthManager App) ()
+handleLoginSubmit view' site user = do
   loginAttempt <- loginByUsername
                     (user ^. username)
                     (user ^. password . to (ClearText . encodeUtf8))
@@ -68,7 +68,7 @@ handleLoginSubmit view' user = do
   case loginAttempt of
     Left s -> do
       liftIO $ print s
-      heistLocal (bindDigestiveSplices view') $ render "index"
+      heistLocal (bindDigestiveSplices view') $ render site
     Right _ -> redirect "/"
 
 -- | Logs out and redirects the user to the site index.
@@ -85,8 +85,8 @@ handleNewUser = do
                 (user ^. username)
                 (encodeUtf8 (user ^. password))
       case auth' of
-        Left e  -> liftIO (print e) >> heistLocal (bindDigestiveSplices view') (render "index")
-        Right _ -> handleLoginSubmit view' user
+        Left e  -> liftIO (print e) >> heistLocal (bindDigestiveSplices view') (render "new_user")
+        Right _ -> handleLoginSubmit view' "new_user" user
     Nothing -> heistLocal (bindDigestiveSplices view') $ render "new_user"
 
 allQuoteCategorySplices :: [QuoteCategory] -> Splices (SnapletISplice App)
