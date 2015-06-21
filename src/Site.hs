@@ -37,14 +37,11 @@ import Heist
 import qualified Heist.Interpreted as I
 
 import Auth.Login
+import Auth.Logout
 import Auth.Register
 import Forms.QuoteCategory
 import Lenses
 import Types.QuoteCategory
-
--- | Logs out and redirects the user to the site index.
-handleLogout :: Handler App (AuthManager App) ()
-handleLogout = logout >> redirect "/"
 
 allQuoteCategorySplices :: [QuoteCategory] -> Splices (SnapletISplice App)
 allQuoteCategorySplices qcs = "allQuoteCategories" ## renderQuoteCategories qcs
