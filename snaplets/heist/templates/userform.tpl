@@ -8,6 +8,9 @@
       <td>Password:</td><td><dfInputPassword ref="password" /></td>
     </tr>
     <tr>
+      <td>Remember me:</td><td><dfInputCheckbox ref="remember" /></td>
+    </tr>
+    <tr>
       <td></td>
       <td><dfInputSubmit value="${submitText}" /></td>
     </tr>
