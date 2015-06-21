@@ -11,14 +11,16 @@
 -- 'QuoteCategory' form.
 module Forms.QuoteCategory where
 
-import Application
 #if __GLASGOW_HASKELL__ < 710
 import Control.Applicative
 #endif
+import Control.Lens
 import Text.Digestive
 import qualified Data.Text as T
-import Snap
+import Heist
+import qualified Heist.Interpreted as I
 import Types.QuoteCategory
+import Lenses
 
 quoteCategoryForm :: Monad m => Form T.Text m QuoteCategory
 quoteCategoryForm =
@@ -28,3 +30,9 @@ quoteCategoryForm =
   where
     nonEmptyText =
       check "Field cannot be blank" (not . T.null) $ text Nothing
+
+splicesFromQuoteCategory :: Monad n => QuoteCategory -> Splices (I.Splice n)
+splicesFromQuoteCategory qc = do
+  "name" ## qc ^. name . to I.textSplice
+  "slug" ## qc ^. slug . to I.textSplice
+  "enabled" ## qc ^. enabled . to (I.textSplice . T.pack . show)

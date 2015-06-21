@@ -18,11 +18,9 @@ import Application
 import Control.Applicative
 #endif
 import Control.Lens
-import Control.Monad.IO.Class
 import Data.ByteString (ByteString)
 import qualified Data.Map as M
 import Data.Monoid
-import qualified Data.Text as T
 import Data.Text.Encoding
 import Snap.Core
 import Snap.Snaplet
@@ -40,17 +38,9 @@ import qualified Heist.Interpreted as I
 
 import Auth.Login
 import Auth.Register
-import Forms.Login
 import Forms.QuoteCategory
 import Lenses
 import Types.QuoteCategory
-
--- TODO: Probably move this to another module somewhere.
-splicesFromQuoteCategory :: Monad n => QuoteCategory -> Splices (I.Splice n)
-splicesFromQuoteCategory qc = do
-  "name" ## qc ^. name . to I.textSplice
-  "slug" ## qc ^. slug . to I.textSplice
-  "enabled" ## qc ^. enabled . to (I.textSplice . T.pack . show)
 
 -- | Logs out and redirects the user to the site index.
 handleLogout :: Handler App (AuthManager App) ()
