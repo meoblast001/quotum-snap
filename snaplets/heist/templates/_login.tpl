@@ -2,8 +2,6 @@
   <div class="container">
     <h1>Log in</h1>
 
-    <p><loginError/></p>
-
     <bind tag="postAction">/login</bind>
     <bind tag="submitText">Login</bind>
     <apply template="userform"/>
