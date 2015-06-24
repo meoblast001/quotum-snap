@@ -33,6 +33,7 @@ import Snap.Snaplet.Sass
 import Lenses
 import Types.QuoteCategory
 import Types.Quote
+import Types.Slug
 
 data AppState =
   AppState {

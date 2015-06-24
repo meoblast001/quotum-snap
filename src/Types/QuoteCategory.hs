@@ -7,8 +7,7 @@ import Data.Aeson
 import Data.SafeCopy
 import qualified Data.Text as T
 import Data.Typeable
-
-type Slug = T.Text
+import Types.Slug
 
 data QuoteCategory =
   QuoteCategory {
