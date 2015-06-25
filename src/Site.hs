@@ -42,6 +42,7 @@ import Auth.Register
 import Forms.QuoteCategory
 import Lenses
 import Types.QuoteCategory
+import Types.Slug
 
 allQuoteCategorySplices :: [QuoteCategory] -> Splices (SnapletISplice App)
 allQuoteCategorySplices qcs = "allQuoteCategories" ## renderQuoteCategories qcs
@@ -54,7 +55,7 @@ handleViewCategory = do
   slugMaybe <- getParam "slug"
   case decodeUtf8 <$> slugMaybe of
     Just slug' -> do
-      categoryMaybe <- query (SearchQuoteCategory slug')
+      categoryMaybe <- query (SearchQuoteCategory (Slug slug'))
       case categoryMaybe of
         Nothing -> render "error404"
         Just category' ->

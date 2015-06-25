@@ -20,12 +20,13 @@ import qualified Data.Text as T
 import Heist
 import qualified Heist.Interpreted as I
 import Types.QuoteCategory
+import Types.Slug
 import Lenses
 
 quoteCategoryForm :: Monad m => Form T.Text m QuoteCategory
 quoteCategoryForm =
   QuoteCategory <$> "name" .: nonEmptyText
-                <*> "slug" .: nonEmptyText
+                <*> (Slug <$> "slug" .: nonEmptyText)
                 <*> "enabled" .: bool (Just True)
   where
     nonEmptyText =
@@ -34,5 +35,5 @@ quoteCategoryForm =
 splicesFromQuoteCategory :: Monad n => QuoteCategory -> Splices (I.Splice n)
 splicesFromQuoteCategory qc = do
   "name" ## qc ^. name . to I.textSplice
-  "slug" ## qc ^. slug . to I.textSplice
+  "slug" ## qc ^. slug . _Slug . to I.textSplice
   "enabled" ## qc ^. enabled . to (I.textSplice . T.pack . show)

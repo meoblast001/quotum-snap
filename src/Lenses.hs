@@ -12,7 +12,11 @@ import Control.Lens
 import Types.Login
 import Types.Quote
 import Types.QuoteCategory
+import Types.Slug
 
 makeFields ''Login
 makeFields ''Quote
 makeFields ''QuoteCategory
+
+-- Generate an Iso here called _Slug
+makePrisms ''Slug
