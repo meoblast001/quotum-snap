@@ -8,6 +8,7 @@
 module Lenses where
 
 import Control.Lens
+import qualified Data.Text as T
 
 import Types.Login
 import Types.Quote
@@ -18,5 +19,5 @@ makeFields ''Login
 makeFields ''Quote
 makeFields ''QuoteCategory
 
--- Generate an Iso here called _Slug
-makePrisms ''Slug
+_Slug :: Iso' Slug T.Text
+_Slug = iso (\(Slug s) -> s) Slug
