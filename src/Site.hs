@@ -88,7 +88,7 @@ handlePendingCategories =  do
 
 -- | The application's routes.
 routes :: [(ByteString, Handler App App ())]
-routes = [ ("/", with auth handleLogin)
+routes = [ ("", ifTop . with auth $ handleLogin)
          , ("/login", with auth handleLogin)
          , ("/logout", with auth handleLogout)
          , ("/new_user", with auth handleNewUser)

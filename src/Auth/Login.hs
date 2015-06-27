@@ -37,8 +37,8 @@ handleLogin :: Handler App (AuthManager App) ()
 handleLogin = do
   (view', result) <- runForm "login" loginForm
   case result of
-    Just user -> handleLoginSubmit view' "index" user
-    Nothing -> heistLocal (bindDigestiveSplices view') $ render "index"
+    Just user -> handleLoginSubmit view' "home" user
+    Nothing -> heistLocal (bindDigestiveSplices view') $ render "home"
 
 handleLoginSubmit :: View T.Text -> ByteString -> Login -> Handler App (AuthManager App) ()
 handleLoginSubmit view' site user = do
