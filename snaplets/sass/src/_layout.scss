@@ -6,12 +6,13 @@ h1, h2, h3, h4, h5, p, body {
   border: {
     radius: 0px;
     width: 0px 0px 1px 0px;
-    color: $navBorder;  
+    color: $navBorder;
   }
+
   background: $navBg;
   color: $navFg;
-  margin-bottom: 0;
-  
+  margin-bottom: 10px;
+
   a, a:link {
     color: $navFg;
   }
