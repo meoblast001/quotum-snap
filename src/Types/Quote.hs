@@ -13,20 +13,25 @@ import Data.SafeCopy
 import qualified Data.Text as T
 import Data.Typeable
 import Types.Slug
+import Types.QuoteCategory
 
 data Quote =
   Quote {
     quoteSlug :: Slug
   , quoteTitle :: T.Text
   , quoteContents :: T.Text
-  , quoteCategoryList :: [Slug]
+  , quoteCategoryList :: [QuoteCategory]
   } deriving (Eq, Show, Typeable)
 
 deriveSafeCopy 0 'base ''Quote
 
 instance ToJSON Quote where
   toJSON (Quote slug title contents categories) =
-    object ["slug" .= slug, "title" .= title, "contents" .= contents, "categories" .= categories]
+    object [ "slug" .= slug
+           , "title" .= title
+           , "contents" .= contents
+           , "categories" .= categories
+           ]
 
 instance FromJSON Quote where
   parseJSON (Object v) = Quote
