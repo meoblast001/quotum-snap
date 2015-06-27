@@ -1,0 +1,34 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>Main</title><link href="ocean.css" rel="stylesheet" type="text/css" title="Ocean" /><script src="haddock-util.js" type="text/javascript"></script><script type="text/javascript">//<![CDATA[
+window.onload = function () {pageLoad();setSynopsis("mini_Main.html");};
+//]]>
+</script></head><body><div id="package-header"><ul class="links" id="page-menu"><li><a href="index.html">Contents</a></li><li><a href="doc-index.html">Index</a></li></ul><p class="caption">quotum</p></div><div id="content"><div id="module-header"><table class="info"><tr><th>Safe Haskell</th><td>None</td></tr><tr><th>Language</th><td>Haskell98</td></tr></table><p class="caption">Main</p></div><div id="synopsis"><p id="control.syn" class="caption expander" onclick="toggleSection('syn')">Synopsis</p><ul id="section.syn" class="hide" onclick="toggleSection('syn')"><li class="src short"><a href="#v:main">main</a> :: <a href="file:///usr/share/doc/ghc/html/libraries/base-4.8.0.0/System-IO.html#t:IO">IO</a> ()</li><li class="src short"><a href="#v:getConf">getConf</a> :: <a href="file:///usr/share/doc/ghc/html/libraries/base-4.8.0.0/System-IO.html#t:IO">IO</a> (Config Snap AppConfig)</li><li class="src short"><a href="#v:getActions">getActions</a> :: Config Snap AppConfig -&gt; <a href="file:///usr/share/doc/ghc/html/libraries/base-4.8.0.0/System-IO.html#t:IO">IO</a> (Snap (), <a href="file:///usr/share/doc/ghc/html/libraries/base-4.8.0.0/System-IO.html#t:IO">IO</a> ())</li></ul></div><div id="interface"><h1>Documentation</h1><div class="top"><p class="src"><a name="v:main" class="def">main</a> :: <a href="file:///usr/share/doc/ghc/html/libraries/base-4.8.0.0/System-IO.html#t:IO">IO</a> ()</p><div class="doc"><p>This is the entry point for this web server application. It supports
+ easily switching between interpreting source and running statically compiled
+ code.</p><p>In either mode, the generated program should be run from the root of the
+ project tree. When it is run, it locates its templates, static content, and
+ source files in development mode, relative to the current working directory.</p><p>When compiled with the development flag, only changes to the libraries, your
+ cabal file, or this file should require a recompile to be picked up.
+ Everything else is interpreted at runtime. There are a few consequences of
+ this.</p><p>First, this is much slower. Running the interpreter takes a significant
+ chunk of time (a couple tenths of a second on the author's machine, at this
+ time), regardless of the simplicity of the loaded code. In order to
+ recompile and re-load server state as infrequently as possible, the source
+ directories are watched for updates, as are any extra directories specified
+ below.</p><p>Second, the generated server binary is MUCH larger, since it links in the
+ GHC API (via the hint library).</p><p>Third, and the reason you would ever want to actually compile with
+ development mode, is that it enables a faster development cycle. You can
+ simply edit a file, save your changes, and hit reload to see your changes
+ reflected immediately.</p><p>When this is compiled without the development flag, all the actions are
+ statically compiled in. This results in faster execution, a smaller binary
+ size, and having to recompile the server for any code change.</p></div></div><div class="top"><p class="src"><a name="v:getConf" class="def">getConf</a> :: <a href="file:///usr/share/doc/ghc/html/libraries/base-4.8.0.0/System-IO.html#t:IO">IO</a> (Config Snap AppConfig)</p><div class="doc"><p>This action loads the config used by this application. The loaded config
+ is returned as the first element of the tuple produced by the loadSnapTH
+ Splice. The type is not solidly fixed, though it must be an IO action that
+ produces the same type as <code><a href="Main.html#v:getActions">getActions</a></code> takes. It also must be an instance of
+ Typeable. If the type of this is changed, a full recompile will be needed to
+ pick up the change, even in development mode.</p><p>This action is only run once, regardless of whether development or
+ production mode is in use.</p></div></div><div class="top"><p class="src"><a name="v:getActions" class="def">getActions</a> :: Config Snap AppConfig -&gt; <a href="file:///usr/share/doc/ghc/html/libraries/base-4.8.0.0/System-IO.html#t:IO">IO</a> (Snap (), <a href="file:///usr/share/doc/ghc/html/libraries/base-4.8.0.0/System-IO.html#t:IO">IO</a> ())</p><div class="doc"><p>This function generates the the site handler and cleanup action from the
+ configuration. In production mode, this action is only run once. In
+ development mode, this action is run whenever the application is reloaded.</p><p>Development mode also makes sure that the cleanup actions are run
+ appropriately before shutdown. The cleanup action returned from loadSnapTH
+ should still be used after the server has stopped handling requests, as the
+ cleanup actions are only automatically run when a reload is triggered.</p><p>This sample doesn't actually use the config passed in, but more
+ sophisticated code might.</p></div></div></div></div><div id="footer"><p>Produced by <a href="http://www.haskell.org/haddock/">Haddock</a> version 2.16.0</p></div></body></html>
