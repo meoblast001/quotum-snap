@@ -31,5 +31,9 @@ h1, h2, h3, h4, h5, p, body {
 }
 
 .nav .open > a, .nav .open > a:focus, .nav .open > a:hover {
-  background-color: $navDropDownHoverBg;
+  background-color: $navDropdownHoverBg;
+}
+
+.dropdown-menu > li > a {
+  color: $navDropdownFg;
 }
