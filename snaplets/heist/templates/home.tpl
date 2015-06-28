@@ -1,7 +1,7 @@
 <apply template="base">
 
   <ifLoggedIn>
-    <div class="container">
+    <div class="container t10">
       <p>Congrats! You're logged in as '<loggedInUser/>'</p>
       <p><a href="/logout">Logout</a></p>
     </div>

@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container t10">
   <h1>Sign Up</h1>
 
   <bind tag="postAction">/new_user</bind>
