@@ -47,7 +47,8 @@ import Types.Slug
 allQuoteCategorySplices :: [QuoteCategory] -> Splices (SnapletISplice App)
 allQuoteCategorySplices qcs = "allQuoteCategories" ## renderQuoteCategories qcs
   where
-    renderQuoteCategories = I.mapSplices $ I.runChildrenWith . splicesFromQuoteCategory
+    renderQuoteCategories =
+      I.mapSplices $ I.runChildrenWith . splicesFromQuoteCategory
 
 -- | Render category list of quotes.
 handleViewCategory :: Handler App (AuthManager App) ()
