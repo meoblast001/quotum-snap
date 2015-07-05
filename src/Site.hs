@@ -86,6 +86,11 @@ handlePendingCategories =  do
         allQuoteCategorySplices (filter (not . quoteCategoryEnabled) categories'))
   heistLocal splices (render "list_categories")
 
+renderTemplateAs :: Int -> ByteString -> Handler App (AuthManager App) ()
+renderTemplateAs code temp = do
+  modifyResponse $ setResponseCode code
+  render temp
+
 -- | The application's routes.
 routes :: [(ByteString, Handler App App ())]
 routes = [ ("", ifTop . with auth $ handleLogin)
@@ -97,7 +102,7 @@ routes = [ ("", ifTop . with auth $ handleLogin)
          , ("/categories/pending", with auth handlePendingCategories)
          , ("/styles", with sass sassServe)
          , ("/static", serveDirectory "static")
-         , ("", render "error404")
+         , ("", with auth (renderTemplateAs 404 "error404"))
          ]
   where
     needsUser successHandler = do
