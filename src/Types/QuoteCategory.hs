@@ -19,7 +19,7 @@ data QuoteCategory =
     quoteCategoryName :: T.Text
   , quoteCategorySlug :: Slug
   , quoteCategoryEnabled :: Bool
-  } deriving (Eq, Show, Typeable)
+  } deriving (Eq, Ord, Show, Typeable)
 
 deriveSafeCopy 0 'base ''QuoteCategory
 

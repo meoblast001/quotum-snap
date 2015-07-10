@@ -10,6 +10,8 @@ import Control.Applicative
 import Control.Monad (mzero)
 import Data.Aeson
 import Data.SafeCopy
+import Data.Set (Set)
+import qualified Data.Set as Set
 import qualified Data.Text as T
 import Data.Typeable
 import Types.Slug
@@ -20,8 +22,8 @@ data Quote =
     quoteSlug :: Slug
   , quoteTitle :: T.Text
   , quoteContents :: T.Text
-  , quoteCategoryList :: [QuoteCategory]
-  } deriving (Eq, Show, Typeable)
+  , quoteCategoryList :: Set QuoteCategory
+  } deriving (Eq, Ord, Show, Typeable)
 
 deriveSafeCopy 0 'base ''Quote
 
