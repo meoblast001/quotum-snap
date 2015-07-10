@@ -58,7 +58,7 @@ handleViewCategory = do
     Just slug' -> do
       categoryMaybe <- query (SearchQuoteCategory (Slug slug'))
       case categoryMaybe of
-        Nothing -> render "error404"
+        Nothing -> renderTemplateAs 404 "error404"
         Just category' ->
           let splices = "categoryName" ## category' ^. name . to I.textSplice
           in renderWithSplices "view_category" splices
