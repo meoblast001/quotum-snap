@@ -20,6 +20,7 @@ import Control.Monad.IO.Class
 import Data.ByteString (ByteString)
 import qualified Data.Text as T
 import Data.Text.Encoding
+import Data.Maybe
 import Snap.Core
 import Snap.Snaplet
 import Snap.Snaplet.Auth
@@ -50,8 +51,4 @@ handleLoginSubmit view' site user = do
     Left s -> do
       liftIO $ print s
       heistLocal (bindDigestiveSplices view') $ render site
-    Right _ -> do
-      redir <- getQueryParam "r"
-      case redir of
-        Just slug -> redirect slug
-        Nothing   -> redirect "/"
+    Right _ -> redirect . fromMaybe "/" =<< getQueryParam "r"
