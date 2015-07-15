@@ -52,7 +52,6 @@ handleLoginSubmit view' site user = do
       heistLocal (bindDigestiveSplices view') $ render site
     Right _ -> do
       redir <- getQueryParam "r"
-      liftIO $ print redir
       case redir of
         Just slug -> redirect slug
         Nothing   -> redirect "/"
