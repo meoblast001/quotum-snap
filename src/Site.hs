@@ -39,6 +39,7 @@ import qualified Heist.Interpreted as I
 import Auth.Login
 import Auth.Logout
 import Auth.Register
+import Forms.Quote
 import Forms.QuoteCategory
 import Lenses
 import Types.QuoteCategory

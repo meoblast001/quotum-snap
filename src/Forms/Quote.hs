@@ -15,20 +15,29 @@ module Forms.Quote where
 import Control.Applicative
 #endif
 import Control.Lens
+import Control.Monad
 import Text.Digestive
 import qualified Data.Text as T
+import qualified Data.Set as S
+import Data.Maybe
+import Application
 import Heist
 import qualified Heist.Interpreted as I
+import Types.Quote
 import Types.QuoteCategory
 import Types.Slug
 import Lenses
+import Snap.Snaplet.AcidState
 
 quoteForm :: Monad m => Form T.Text m Quote
 quoteForm =
   Quote <$> (Slug <$> "slug" .: nonEmptyText)
         <*> "title" .: nonEmptyText
         <*> "contents" .: nonEmptyText
-        <*> (T.split (== ',') <$> "categories" .: nonEmptyText) -- TODO: This won't typecheck.
+        <*> (map toQuoteCategory . T.split (== ',') <$> "categories" .: nonEmptyText) -- TODO: This won't typecheck.
   where
     nonEmptyText =
       check "Field cannot be blank" (not . T.null) $ text Nothing
+    toQuoteCategory :: T.Text -> Query AppState (Maybe QuoteCategory)
+    toQuoteCategory slug' =
+      searchQuoteCategory (Slug slug')
