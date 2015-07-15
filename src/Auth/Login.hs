@@ -16,7 +16,6 @@ import Application
 import Control.Applicative
 #endif
 import Control.Lens
-import Control.Monad.IO.Class
 import Data.ByteString (ByteString)
 import qualified Data.Text as T
 import Data.Text.Encoding
@@ -48,7 +47,5 @@ handleLoginSubmit view' site user = do
                     (user ^. password . to (ClearText . encodeUtf8))
                     (user ^. remember)
   case loginAttempt of
-    Left s -> do
-      liftIO $ print s
-      heistLocal (bindDigestiveSplices view') $ render site
+    Left _ -> heistLocal (bindDigestiveSplices view') $ render site
     Right _ -> redirect . fromMaybe "/" =<< getQueryParam "r"
