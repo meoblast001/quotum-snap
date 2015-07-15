@@ -11,7 +11,6 @@ import Control.Monad (mzero)
 import Data.Aeson
 import Data.SafeCopy
 import Data.Set (Set)
-import qualified Data.Set as Set
 import qualified Data.Text as T
 import Data.Typeable
 import Types.Slug
