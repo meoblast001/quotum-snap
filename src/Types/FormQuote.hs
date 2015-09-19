@@ -9,7 +9,6 @@ import Control.Applicative
 #endif
 import Control.Monad (mzero)
 import Data.Aeson
-import Data.SafeCopy
 import Data.Set (Set)
 import qualified Data.Text as T
 import Data.Typeable
@@ -20,10 +19,8 @@ data FormQuote =
     formQuoteSlug :: Slug
   , formQuoteTitle :: T.Text
   , formQuoteContents :: T.Text
-  , formQuoteCategoryList :: Set T.Text
+  , formQuoteCategoryList :: Set Slug
   } deriving (Eq, Ord, Show, Typeable)
-
-deriveSafeCopy 0 'base ''FormQuote
 
 instance ToJSON FormQuote where
   toJSON (FormQuote slug title contents categories) =

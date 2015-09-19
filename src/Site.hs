@@ -57,7 +57,7 @@ handleViewCategory = do
   slugMaybe <- getParam "slug"
   case decodeUtf8 <$> slugMaybe of
     Just slug' -> do
-      categoryMaybe <- query (SearchQuoteCategory (Slug slug'))
+      categoryMaybe <- query (FindQuoteCategoryBySlug (Slug slug'))
       case categoryMaybe of
         Nothing -> renderTemplateAs 404 "error404"
         Just category' ->
@@ -71,7 +71,7 @@ handleNewCategory :: Handler App (AuthManager App) ()
 handleNewCategory = do
   (view', result) <- runForm "form" quoteCategoryForm
   case result of
-   Just x -> update (AddQuoteCategory x) >> renderAllCategories view'
+   Just x -> update (SaveQuoteCategory x) >> renderAllCategories view'
    Nothing -> renderAllCategories view'
   where
     renderAllCategories view' = do

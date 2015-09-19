@@ -63,22 +63,38 @@ type AppHandler = Handler App App
 
 deriveSafeCopy 0 'base ''AppState
 
-addQuoteCategory :: QuoteCategory -> Update AppState ()
-addQuoteCategory qc = categories %= M.insert (qc ^. slug) qc
+saveQuoteCategory :: QuoteCategory -> Update AppState ()
+saveQuoteCategory qc = categories %= M.insert (qc ^. slug) qc
 
 allQuoteCategories :: Query AppState [QuoteCategory]
 allQuoteCategories = map snd <$> M.toList <$> view categories
 
-searchQuoteCategory :: Slug -> Query AppState (Maybe QuoteCategory)
-searchQuoteCategory slug' = M.lookup slug' <$> view categories
+findQuoteCategoryBySlug :: Slug -> Query AppState (Maybe QuoteCategory)
+findQuoteCategoryBySlug slug' = M.lookup slug' <$> view categories
 
 deleteQuoteCategory :: Slug -> Update AppState ()
 deleteQuoteCategory slug' = categories %= M.delete slug'
 
+saveQuote :: Quote -> Update AppState ()
+saveQuote quote = quotes %= M.insert (quote ^. slug) quote
+
+allQuotes :: Query AppState [Quote]
+allQuotes = map snd <$> M.toList <$> view quotes
+
+findQuoteBySlug :: Slug -> Query AppState (Maybe Quote)
+findQuoteBySlug slug' = M.lookup slug' <$> view quotes
+
+deleteQuote :: Slug -> Update AppState ()
+deleteQuote slug' = quotes %= M.delete slug'
+
 makeAcidic ''AppState
   [
-    'addQuoteCategory
+    'saveQuoteCategory
   , 'allQuoteCategories
-  , 'searchQuoteCategory
+  , 'findQuoteCategoryBySlug
   , 'deleteQuoteCategory
+  , 'saveQuote
+  , 'allQuotes
+  , 'findQuoteBySlug
+  , 'deleteQuote
   ]
