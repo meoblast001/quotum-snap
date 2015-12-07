@@ -19,17 +19,20 @@ data QuoteCategory =
     quoteCategoryName :: T.Text
   , quoteCategorySlug :: Slug
   , quoteCategoryEnabled :: Bool
+  , quoteCategoryQuotes :: [Slug]
   } deriving (Eq, Ord, Show, Typeable)
 
 deriveSafeCopy 0 'base ''QuoteCategory
 
 instance ToJSON QuoteCategory where
-  toJSON (QuoteCategory name slug enabled) =
-    object ["name" .= name, "slug" .= slug, "enabled" .= enabled]
+  toJSON (QuoteCategory name slug enabled quotes) =
+    object ["name" .= name, "slug" .= slug, "enabled" .= enabled,
+            "quotes" .= quotes]
 
 instance FromJSON QuoteCategory where
   parseJSON (Object v) = QuoteCategory
                          <$> v .: "name"
                          <*> v .: "slug"
                          <*> v .: "enabled"
+                         <*> v .: "quotes"
   parseJSON _          = mzero

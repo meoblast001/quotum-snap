@@ -20,6 +20,7 @@ import Control.Applicative
 import Control.Lens
 import Data.ByteString (ByteString)
 import qualified Data.Map as M
+import Data.Maybe
 import Data.Monoid
 import Data.Text.Encoding
 import Snap.Core
@@ -41,7 +42,8 @@ import Auth.Logout
 import Auth.Register
 import Forms.Quote
 import Forms.QuoteCategory
-import Lenses
+import qualified Lenses as L
+import Types.Quote
 import Types.QuoteCategory
 import Types.Slug
 
@@ -61,7 +63,7 @@ handleViewCategory = do
       case categoryMaybe of
         Nothing -> renderTemplateAs 404 "error404"
         Just category' ->
-          let splices = "categoryName" ## category' ^. name . to I.textSplice
+          let splices = "categoryName" ## category' ^. L.name . to I.textSplice
           in renderWithSplices "view_category" splices
     -- TODO: A 400 message would be better.
     Nothing -> redirect "/"
@@ -82,11 +84,35 @@ handleNewCategory = do
       heistLocal splices (render "list_categories")
 
 handlePendingCategories :: Handler App (AuthManager App) ()
-handlePendingCategories =  do
+handlePendingCategories = do
   categories' <- query AllQuoteCategories
   let splices = I.bindSplices (
         allQuoteCategorySplices (filter (not . quoteCategoryEnabled) categories'))
   heistLocal splices (render "list_categories")
+
+handleViewQuotes :: Handler App (AuthManager App) ()
+handleViewQuotes = do
+  mayCategorySlug <- getParam "category"
+  case decodeUtf8 <$> mayCategorySlug of
+    Just categorySlug -> do
+      mayCategory <- query $ FindQuoteCategoryBySlug (Slug categorySlug)
+      case mayCategory of
+        Just category' -> do
+          quotes' <- catMaybes <$> mapM
+                     (\slug' -> query $ FindQuoteBySlug slug')
+                     (category' ^. L.quotes)
+          let splices = I.bindSplices (quotesSplices category' quotes')
+          heistLocal splices (render "view_quotes")
+        -- TODO: A 404 message would be better.
+        Nothing -> redirect "/"
+    -- TODO: A 400 message would be better.
+    Nothing -> redirect "/"
+  where
+    quotesSplices :: QuoteCategory -> [Quote] -> Splices (SnapletISplice App)
+    quotesSplices category' quotes' = do
+      "categoryName" ## category' ^. L.name . to I.textSplice
+      "quotes" ## renderQuotes quotes'
+    renderQuotes = I.mapSplices $ I.runChildrenWith . splicesFromQuote
 
 renderTemplateAs :: Int -> ByteString -> Handler App (AuthManager App) ()
 renderTemplateAs code temp = do
@@ -102,6 +128,7 @@ routes = [ ("", ifTop . with auth $ handleLogin)
          , ("/category/:slug", with auth handleViewCategory)
          , ("/categories", with auth (needsUser handleNewCategory))
          , ("/categories/pending", with auth handlePendingCategories)
+         , ("/quotes/:category", with auth handleViewQuotes)
          , ("/styles", with sass sassServe)
          , ("/static", serveDirectory "static")
          , ("", with auth (renderTemplateAs 404 "error404"))

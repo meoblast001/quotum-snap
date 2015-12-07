@@ -30,7 +30,7 @@ import Snap.Snaplet.Auth
 import Snap.Snaplet.Session
 import Snap.Snaplet.Sass
 
-import Lenses
+import qualified Lenses as L
 import Types.QuoteCategory
 import Types.Quote
 import Types.Slug
@@ -64,7 +64,7 @@ type AppHandler = Handler App App
 deriveSafeCopy 0 'base ''AppState
 
 saveQuoteCategory :: QuoteCategory -> Update AppState ()
-saveQuoteCategory qc = categories %= M.insert (qc ^. slug) qc
+saveQuoteCategory qc = categories %= M.insert (qc ^. L.slug) qc
 
 allQuoteCategories :: Query AppState [QuoteCategory]
 allQuoteCategories = map snd <$> M.toList <$> view categories
@@ -76,7 +76,7 @@ deleteQuoteCategory :: Slug -> Update AppState ()
 deleteQuoteCategory slug' = categories %= M.delete slug'
 
 saveQuote :: Quote -> Update AppState ()
-saveQuote quote = quotes %= M.insert (quote ^. slug) quote
+saveQuote quote = quotes %= M.insert (quote ^. L.slug) quote
 
 allQuotes :: Query AppState [Quote]
 allQuotes = map snd <$> M.toList <$> view quotes

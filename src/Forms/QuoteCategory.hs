@@ -28,6 +28,7 @@ quoteCategoryForm =
   QuoteCategory <$> "name" .: nonEmptyText
                 <*> (Slug <$> "slug" .: nonEmptyText)
                 <*> "enabled" .: bool (Just True)
+                <*> pure []
   where
     nonEmptyText =
       check "Field cannot be blank" (not . T.null) $ text Nothing

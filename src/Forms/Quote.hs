@@ -15,14 +15,18 @@ import Application
 #if __GLASGOW_HASKELL__ < 710
 import Control.Applicative
 #endif
+import Control.Lens
 import Data.Maybe
 import Text.Digestive
 import qualified Data.Text as T
 import qualified Data.Set as S
+import Heist
+import qualified Heist.Interpreted as I
 import Types.FormQuote
 import Types.Slug
 import Types.Quote
 import Snap.Snaplet.AcidState
+import Lenses
 
 quoteForm :: Monad m => Form T.Text m FormQuote
 quoteForm =
@@ -35,6 +39,12 @@ quoteForm =
     nonEmptyText =
       check "Field cannot be blank" (not . T.null) $ text Nothing
 
+splicesFromQuote :: Monad n => Quote -> Splices (I.Splice n)
+splicesFromQuote quote = do
+  "slug" ## quote ^. slug . _Slug . to I.textSplice
+  "title" ## quote ^. title . to I.textSplice
+  "contents" ## quote ^. contents . to I.textSplice
+
 saveQuoteForm :: FormQuote -> AppHandler Quote
 saveQuoteForm formQuote = do
   let slugList = S.toList $ formQuoteCategoryList formQuote
@@ -43,6 +53,6 @@ saveQuoteForm formQuote = do
   let quote = Quote (formQuoteSlug formQuote)
                     (formQuoteTitle formQuote)
                     (formQuoteContents formQuote)
-                    (S.fromList categories')
+                    (S.fromList $ map (\categ -> categ ^. slug) categories')
   update (SaveQuote quote)
   return quote

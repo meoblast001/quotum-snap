@@ -14,14 +14,13 @@ import Data.Set (Set)
 import qualified Data.Text as T
 import Data.Typeable
 import Types.Slug
-import Types.QuoteCategory
 
 data Quote =
   Quote {
     quoteSlug :: Slug
   , quoteTitle :: T.Text
   , quoteContents :: T.Text
-  , quoteCategoryList :: Set QuoteCategory
+  , quoteCategoryList :: Set Slug
   } deriving (Eq, Ord, Show, Typeable)
 
 deriveSafeCopy 0 'base ''Quote
